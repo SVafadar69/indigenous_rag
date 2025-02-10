@@ -36,7 +36,7 @@ client = GroundX(api_key=os.getenv("GROUNDX_API_KEY"))
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # flip image 
-image_path = "/Users/sv/Downloads/Support Vector Machines Programming Assignment/indigenous_background.jpg"
+image_path = "assets/indigenous_background.jpg"
 def flip_image(image_path): 
 
     image = Image.open(image_path)
@@ -84,23 +84,17 @@ st.markdown(
         font-size: 2.8rem;
         font-weight: 700;
     }}
-    .description {{
-        font-family: 'Poppins', sans-serif;
-        color: #EDEDED;  /* Light Gray */
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }}
-    .textbox {{
-        width: 100%;
-        max-width: 400px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        background-color: #F0F0E0;  /* Light Beige */
-        color: #333333;  /* Dark Gray Text */
-        border-radius: 8px;
-        box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-        font-family: 'Poppins', sans-serif;
-    }}
+    # .textbox {{
+    #     width: 100%;
+    #     max-width: 400px;
+    #     padding: 10px;
+    #     border: 1px solid #ddd;
+    #     background-color: #F0F0E0;  /* Light Beige */
+    #     color: #333333;  /* Dark Gray Text */
+    #     border-radius: 8px;
+    #     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+    #     font-family: 'Poppins', sans-serif;
+    # }}
     .stButton > button {{
         background: linear-gradient(135deg, #3e8c20, #56ab2f) !important;
         color: white !important;
@@ -141,8 +135,6 @@ with col2:
         unsafe_allow_html=True
     )
 
-    # Description Text (Off-White)
-
     # Multiline Text Input
     user_query = st.text_area("", height=120)
 
@@ -172,7 +164,7 @@ def search_over_both_textbooks(user_query, document_id_1, document_id_2):
 
 def llm_call_groq(documents_retrieved, user_query):
     response_final = groq_client.chat.completions.create(
-        model="mixtral-8x7b-32768",
+        model="llama-3.1-8b-instant",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {
