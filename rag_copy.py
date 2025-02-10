@@ -131,7 +131,7 @@ with col2:
 
     # Subheader with Forest Green
     st.markdown(
-        f"<h3 style='color: #2E8B57; font-family: Poppins, sans-serif;'>Type/Paste a question below to search through the textbook.</h3>",
+        f"<h3 style='color: #2E8B57; font-family: Poppins, sans-serif;'>Type/Paste a question below to search through the textbook. Try to make your question as specific as possible. </h3>",
         unsafe_allow_html=True
     )
 
