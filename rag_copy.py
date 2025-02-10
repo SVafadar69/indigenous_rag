@@ -1,6 +1,3 @@
-from IPython.display import clear_output
-clear_output()
-
 import streamlit as st
 import os
 from langchain.document_loaders import DirectoryLoader
@@ -17,23 +14,18 @@ from groundx import Document, GroundX
 from groq import Groq
 from dotenv import load_dotenv
 from PIL import Image
-load_dotenv()
-
-#########################################################
-# Streamlit Page Config
-#########################################################
-st.set_page_config(page_title="Indigenous Class Q&A", page_icon="🌏", layout="wide")
-
-#########################################################
-# Custom CSS for Left Alignment
-#########################################################
-
-import streamlit as st
-import base64
 import tempfile
+from IPython.display import clear_output
+import html
+load_dotenv()
 
 client = GroundX(api_key=os.getenv("GROUNDX_API_KEY"))
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
+# Lookup document IDs
+document_id_1 = client.documents.lookup(id=14537).documents[0].document_id
+document_id_2 = client.documents.lookup(id=14538).documents[0].document_id
 
 # flip image 
 image_path = "assets/indigenous_background.jpg"
@@ -62,93 +54,7 @@ def get_base64_image(image_path):
     return encoded
 
 # Path to your local image
-
 background_image = get_base64_image(temporary_file_image_path)
-
-
-# Inject CSS to set the background image
-st.markdown(
-    f"""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600&display=swap');
-    .stApp {{
-        background-image: url("data:image/jpeg;base64,{background_image}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
-
-    .title {{
-        font-family: 'Playfair Display', serif;
-        color: #2E8B57;  /* Sea Green */
-        font-size: 2.8rem;
-        font-weight: 700;
-    }}
-    # .textbox {{
-    #     width: 100%;
-    #     max-width: 400px;
-    #     padding: 10px;
-    #     border: 1px solid #ddd;
-    #     background-color: #F0F0E0;  /* Light Beige */
-    #     color: #333333;  /* Dark Gray Text */
-    #     border-radius: 8px;
-    #     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
-    #     font-family: 'Poppins', sans-serif;
-    # }}
-    .stButton > button {{
-        background: linear-gradient(135deg, #3e8c20, #56ab2f) !important;
-        color: white !important;
-        font-weight: bold !important;
-        border-radius: 8px !important;
-        padding: 12px 24px !important;
-        border: none !important;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        font-family: 'Poppins', sans-serif;
-    }}
-    .stButton > button:hover {{
-        background: linear-gradient(135deg, #2e6c17, #3e8c20) !important;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-#########################################################
-# Main Content with Left Alignment
-#########################################################
-st.markdown("<div class='left-container'>", unsafe_allow_html=True)
-
-# Move query box more to the left using columns
-col1, col2 = st.columns([4, 3.5])  # Adjust column ratios for alignment
-
-with col2:
-    # Place all elements in the wider left column
-    st.markdown(
-        f"<h1 style='color: #8B0000; font-family: Playfair Display, serif; font-size: 3rem;'>Textbook Question Answering </h1>",
-        unsafe_allow_html=True
-    )
-
-    # Subheader with Forest Green
-    st.markdown(
-        f"<h3 style='color: #2E8B57; font-family: Poppins, sans-serif;'>Type/Paste a question below to search through the textbook. Try to make your question as specific as possible. </h3>",
-        unsafe_allow_html=True
-    )
-
-    # Multiline Text Input
-    user_query = st.text_area("", height=120)
-
-    # Add a "Submit" button
-    submit_button = st.button("Submit")
-
-
-#########################################################
-# API and Document Lookup
-#########################################################
-
-# Lookup document IDs
-document_id_1 = client.documents.lookup(id=14537).documents[0].document_id
-document_id_2 = client.documents.lookup(id=14538).documents[0].document_id
 
 #########################################################
 # Helper Functions
@@ -180,10 +86,61 @@ def llm_call_groq(documents_retrieved, user_query):
     )
     return response_final.choices[0].message.content
 
-#########################################################
-# Handle User Input and Display Results
-#########################################################
-with col2: 
+
+st.set_page_config(page_title="Indigenous Class Q&A", page_icon="🌏", layout="wide")
+# Inject CSS to set the background image
+st.markdown(
+    f"""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@400;600&display=swap');
+    .stApp {{
+        background-image: url("data:image/jpeg;base64,{background_image}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+
+    .stButton > button {{
+        background: linear-gradient(135deg, #3e8c20, #56ab2f) !important;
+        color: white !important;
+        font-weight: bold !important;
+        border-radius: 8px !important;
+        padding: 12px 24px !important;
+        border: none !important;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        font-family: 'Poppins', sans-serif;
+    }}
+    .stButton > button:hover {{
+        background: linear-gradient(135deg, #2e6c17, #3e8c20) !important;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Move query box more to the left using columns
+col1, col2 = st.columns([4, 3.5])  # Adjust column ratios for alignment
+
+with col2:
+    # Place all elements in the wider left column
+    st.markdown(
+        f"<h1 style='color: #8B0000; font-family: Playfair Display, serif; font-size: 3rem;'>Textbook Question Answering </h1>",
+        unsafe_allow_html=True
+    )
+
+    # Subheader with Forest Green
+    st.markdown(
+        f"<h3 style='color: #2E8B57; font-family: Poppins, sans-serif;'>Type/Paste a question below to search through the textbook. Try to make your question as specific as possible. </h3>",
+        unsafe_allow_html=True
+    )
+
+    # Multiline Text Input
+    user_query = st.text_area("", height=120)
+
+    # Add a "Submit" button
+    submit_button = st.button("Submit")
+
     if submit_button and user_query.strip():
         retrieved_answer_final = search_over_both_textbooks(
             user_query=user_query,
@@ -195,12 +152,12 @@ with col2:
             documents_retrieved=retrieved_answer_final,
             user_query=user_query
         )
+        formatted_answer = html.escape(final_answer).replace("\r\n", "\n").replace("\n", "<br>").strip()
         st.markdown(
                 "<h4 style='color: #8B0000; font-family: Poppins, sans-serif;'>Answer:</h4>",
                 unsafe_allow_html=True
             )
-        st.markdown(f"<p style='color: #2E8B57;'>{final_answer}</p>", unsafe_allow_html=True)  # Forest Green
+        st.markdown(f"<p style='color: #2E8B57;'>{formatted_answer}</p>", unsafe_allow_html=True)  # Forest Green
 
-
-
-st.markdown("</div>", unsafe_allow_html=True)
+ 
+    st.markdown("</div>", unsafe_allow_html=True)
