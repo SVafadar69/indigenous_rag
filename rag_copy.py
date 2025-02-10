@@ -32,7 +32,7 @@ import streamlit as st
 import base64
 import tempfile
 
-client = GroundX(api_key='f1dd9394-88a9-4da0-936d-89e0d30054ec')
+client = GroundX(api_key=os.getenv("GROUNDX_API_KEY"))
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 # flip image 
