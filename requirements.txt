@@ -1,0 +1,30 @@
+# Core Developer and Utility Tools
+IPython
+tqdm
+python-dotenv
+
+# Data Processing and Visualization
+numpy
+pandas
+matplotlib
+Pillow
+
+# Document and Text Processing
+PyPDF2
+pytesseract
+langchain
+
+# Machine Learning and AI
+torch
+clip
+faiss-cpu
+
+# Web and App Development
+streamlit
+streamlit_jupyter
+
+# Specialized APIs and Libraries
+langchain-openai
+langchain-community
+groundx
+groq
